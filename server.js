@@ -173,14 +173,18 @@ function updateEmployeeRole() {
                 name: "updateMe",
                 message: "Who do you want to update?",
                 choices: results.map(employees => `${employees.id}:${employees.firstName} ${employees.lastName}`)
+            },
+            {
+                name: "newRole",
+                type: "list",
+                message: "Change their role to:",
+                choices: results.map(roles => `${roles.jobTitle}`)
             }
         ])
             .then(response => {
-                let id = response.updateMe.split(":")[0];
-                connection.query("UPDATE FROM employees WHERE ?", [
-                    { id }
-                ], (error, results) => {
-                    console.log(results);
+                connection.query('UPDATE employees SET jobTitle=? WHERE firstName= ?',[response.newRole, response.updateMe],function(err, res) {
+                    if (err) throw err;
+                    console.log("Role has been changed!");
                     mainMenu();
                 })
             })
